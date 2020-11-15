@@ -2,9 +2,18 @@
 
 import os
 import sys
+import time
+
+from selenium import webdriver
+from selenium.webdriver.support import ui
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
 
 from tkinter import *
 from tkinter import filedialog, messagebox
+
+import docx
 
 class Bloker:
     def __init__(self,win):
@@ -31,10 +40,12 @@ class Bloker:
         self.btn3.place(x=200,y=250)
 
     def findFile(self):
-        filename = filedialog.askopenfilename(initialdir="/",title="Choisi un fichier",filetypes=(("pdf files","*.pdf"),("all files","*.*")))
+        filename = filedialog.askopenfilename(initialdir="/",title="Choisi un fichier",filetypes=(("word files","*.docx"),("all files","*.*")))
         self.label4 = Label(self.root, text="")
-        self.label4.place(x=150,y=200)
-        self.label4.configure(text=filename)
+        self.label4.place(x=180,y=203)
+        tmp = filename.split('/')
+        i = len(tmp)
+        self.label4.configure(text=tmp[i-1])
         self.data["file"] = filename
 
     def run(self):
@@ -58,13 +69,64 @@ class Bloker:
         self.root.destroy()
 
 def getInstagramAccountsToBlock(file):
-    accounts = list()
-    #attendre le nouveau format par Guillaume
+    try:
+        doc = docx.Document(file)
+        accounts = list()
+        i=0
+        for para in doc.paragraphs:
+            tmp = para.text.replace("https://www.instagram.com/",'')
+            accounts.append(tmp[:-1])
+            i=i+1
+        print(i)
+        print(accounts)
+    except Exception as e:
+        print(e)
+        pass
     return accounts
 
 def bot(data):
     accounts = getInstagramAccountsToBlock(data['file'])
-
+    print('launching')
+    driver = webdriver.Firefox(executable_path='./geckodriver')
+    driver.get("https://instagram.com/")
+    try:
+        driver.find_element_by_css_selector('.bIiDR').click()
+    except:
+        pass
+    """ Connexion instagram account """
+    try:
+        instaAccount = driver.find_element_by_name("username")
+        instaPassword = driver.find_element_by_name("password")
+        instaAccount.send_keys(data['user'])
+        instaPassword.send_keys(data['password'])
+        time.sleep(1)
+        driver.find_element_by_xpath('//button[@type="submit"]').click()
+    except:
+        pass
+    # Try to skip notification popup (fr only)
+    try:
+        ui.WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".aOOlW.HoLwm"))).click()
+    except:
+        pass
+    """ Loop bloker account """
+    try:
+        accounts =[]
+        accounts.append('larrieusasha')
+        i=0
+        for account in accounts:
+            if i <= int(data['nbBlok']):
+                driver.get("https://www.instagram.com/"+account)  
+                driver.find_element_by_css_selector('.wpO6b').click()
+                time.sleep(1)
+                driver.find_element_by_css_selector(".mt3GC:only-child .aOOlW:first-child").click()
+                time.sleep(1)
+                driver.find_element_by_css_selector(".bIiDR").click()
+            else:
+                break
+            i=i+1
+    except Exception as e:
+        print(e)
+        pass
 
 
 if __name__ == "__main__":
