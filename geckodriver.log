@@ -380,3 +380,19 @@ console.warn: SearchSettings: "get: No settings file exists, new profile?" (new 
 1605473099296	Marionette	INFO	Listening on port 60833
 1605473099353	Marionette	WARN	TLS certificate errors will be ignored for this session
 1605473137246	Marionette	INFO	Stopped listening on port 60833
+1605473496066	addons.xpi	ERROR	System addon update list error Error: Failed downloading XML, status: 0, reason: timeout
+1605473502346	Marionette	INFO	Stopped listening on port 65340
+1605473503479	Marionette	INFO	Stopped listening on port 52538
+1605473504518	Marionette	INFO	Stopped listening on port 54576
+1605473505485	Marionette	INFO	Stopped listening on port 55581
+1605473506654	Marionette	INFO	Stopped listening on port 58253
+1605473507693	Marionette	INFO	Stopped listening on port 58659
+1605473508691	Marionette	INFO	Stopped listening on port 59057
+1605473509584	Marionette	INFO	Stopped listening on port 59579
+1605473510674	Marionette	INFO	Stopped listening on port 62604
+1605473514366	Marionette	INFO	Stopped listening on port 52004
+1605473516423	Marionette	INFO	Stopped listening on port 57703
+1605473517991	Marionette	INFO	Stopped listening on port 54295
+1605473519292	Marionette	INFO	Stopped listening on port 59206
+1605473520567	Marionette	INFO	Stopped listening on port 59412
+1605473521797	Marionette	INFO	Stopped listening on port 59765

@@ -115,7 +115,6 @@ def bot(data):
         driver.find_element_by_xpath('//button[@type="submit"]').click()
     except:
         pass
-    # Try to skip notification popup (fr only)
     try:
         ui.WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".aOOlW.HoLwm"))).click()
     except:
