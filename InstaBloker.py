@@ -2,6 +2,7 @@
 
 import os
 import sys
+
 from tkinter import *
 from tkinter import filedialog, messagebox
 
@@ -48,9 +49,23 @@ class Bloker:
         elif self.t3.get().isnumeric() != True:
             messagebox.showerror(title='NB Bloker error', message='Vous devez entrer uniquement des chiffres pour le nombre de bloquage')
         else:
-            print("ok")
+            self.data['user'] = self.t1.get()
+            self.data['password'] = self.t2.get()
+            self.data['nbBlok'] = self.t3.get()
+            bot(self.data)
+
     def quit(self):
         self.root.destroy()
+
+def getInstagramAccountsToBlock(file):
+    accounts = list()
+    #attendre le nouveau format par Guillaume
+    return accounts
+
+def bot(data):
+    accounts = getInstagramAccountsToBlock(data['file'])
+
+
 
 if __name__ == "__main__":
     window=Tk()
