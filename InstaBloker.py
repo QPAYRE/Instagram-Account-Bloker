@@ -2,13 +2,14 @@
 
 import os
 import sys
+import csv
 import time
 
 from selenium import webdriver
 from selenium.webdriver.support import ui
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from tkinter import *
 from tkinter import filedialog, messagebox
@@ -19,6 +20,8 @@ class Bloker:
     def __init__(self,win):
         self.root = win
         self.data = dict()
+        self.data["file"] = ''
+
         self.label1 = Label(win, text="Nom d'utilisateur")
         self.label2 = Label(win, text="Mot de passe")
         self.label3 = Label(win, text="Bloquage MAX")
@@ -50,7 +53,7 @@ class Bloker:
 
     def run(self):
         if self.data["file"] == '':
-            messagebox.showwarning(title='File missing', message='Vous devez choisir un fichier de list @ au format PDF')
+            messagebox.showwarning(title='File missing', message='Vous devez choisir un fichier de list @ au format docx')
         elif self.t1.get() == '':
             messagebox.showwarning(title='Username missing', message='Vous devez renseigner votre username instagram (@)')
         elif self.t2.get() == '':
@@ -63,7 +66,8 @@ class Bloker:
             self.data['user'] = self.t1.get()
             self.data['password'] = self.t2.get()
             self.data['nbBlok'] = self.t3.get()
-            bot(self.data)
+            if bot(self.data) == 'OK':
+                messagebox.showinfo(title='Instagram Bloker', message='Done :)')
 
     def quit(self):
         self.root.destroy()
@@ -72,21 +76,29 @@ def getInstagramAccountsToBlock(file):
     try:
         doc = docx.Document(file)
         accounts = list()
-        i=0
         for para in doc.paragraphs:
             tmp = para.text.replace("https://www.instagram.com/",'')
             accounts.append(tmp[:-1])
-            i=i+1
-        print(i)
-        print(accounts)
     except Exception as e:
         print(e)
         pass
-    return accounts
+    try:
+        results = []
+        with open('blocked.csv') as inputfile:
+            for row in csv.reader(inputfile):
+                for elem in row:
+                    results.append(elem)
+    except Exception as e:
+        print(e)
+        pass
+    try:
+        accounts = [item for item in accounts if item not in results]
+    except Exception as e:
+        print(e)
+    return accounts, results
 
 def bot(data):
-    accounts = getInstagramAccountsToBlock(data['file'])
-    print('launching')
+    accounts, results = getInstagramAccountsToBlock(data['file'])
     driver = webdriver.Firefox(executable_path='./geckodriver')
     driver.get("https://instagram.com/")
     try:
@@ -110,23 +122,35 @@ def bot(data):
         pass
     """ Loop bloker account """
     try:
-        accounts =[]
-        accounts.append('larrieusasha')
-        i=0
+        accountsBlocked = []
+        i=1
         for account in accounts:
             if i <= int(data['nbBlok']):
                 driver.get("https://www.instagram.com/"+account)  
                 driver.find_element_by_css_selector('.wpO6b').click()
-                time.sleep(1)
+                time.sleep(2)
                 driver.find_element_by_css_selector(".mt3GC:only-child .aOOlW:first-child").click()
-                time.sleep(1)
+                time.sleep(2)
                 driver.find_element_by_css_selector(".bIiDR").click()
+                time.sleep(2)
+                accountsBlocked.append(account)
             else:
                 break
             i=i+1
     except Exception as e:
         print(e)
         pass
+    try:
+        for elem in results:
+            accountsBlocked.append(elem)
+        with open("blocked.csv","w") as f:
+            wr = csv.writer(f,delimiter=",")
+            wr.writerow(accountsBlocked)
+    except Exception as e:
+        print(e)
+        pass
+    driver.close()
+    return('OK')
 
 
 if __name__ == "__main__":
