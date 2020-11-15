@@ -49,7 +49,6 @@ class Bloker:
             messagebox.showerror(title='NB Bloker error', message='Vous devez entrer uniquement des chiffres pour le nombre de bloquage')
         else:
             print("ok")
-
     def quit(self):
         self.root.destroy()
 
