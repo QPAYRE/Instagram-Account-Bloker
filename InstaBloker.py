@@ -124,18 +124,21 @@ def bot(data):
         accountsBlocked = []
         i=1
         for account in accounts:
-            if i <= int(data['nbBlok']):
-                driver.get("https://www.instagram.com/"+account)  
-                driver.find_element_by_css_selector('.wpO6b').click()
-                time.sleep(2)
-                driver.find_element_by_css_selector(".mt3GC:only-child .aOOlW:first-child").click()
-                time.sleep(2)
-                driver.find_element_by_css_selector(".bIiDR").click()
-                time.sleep(2)
-                accountsBlocked.append(account)
-            else:
-                break
-            i=i+1
+            try:
+                if i <= int(data['nbBlok']):
+                    driver.get("https://www.instagram.com/"+account)  
+                    driver.find_element_by_css_selector('.wpO6b').click()
+                    time.sleep(2)
+                    driver.find_element_by_css_selector(".mt3GC:only-child .aOOlW:first-child").click()
+                    time.sleep(2)
+                    driver.find_element_by_css_selector(".bIiDR").click()
+                    time.sleep(2)
+                    accountsBlocked.append(account)
+                else:
+                    break
+                i=i+1
+            except:
+                pass
     except Exception as e:
         print(e)
         pass
